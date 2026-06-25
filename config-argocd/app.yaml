@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook-app-vagrant-context
+  namespace: argocd
+spec:
+  destination:
+    namespace: guestbook-app-vagrant-context
+    server: https://vagrant-cluster.dannyzh.com:6443
+  project: testargocd
+  source:
+    path: charts/guestbook-new/chart/guestbook
+    repoURL: git@github.com:danny-zh/k8s-admin.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: false
+    syncOptions:
+    - CreateNamespace=true

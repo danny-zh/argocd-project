@@ -14,7 +14,7 @@ install-latest-argocd:
 print-argocd-server-url:
 	@echo "ArgoCD server URL: https://$(IP_ADDRESS):$(ARGOCD_EXPOSED_PORT)"
 
-expose-argocd-server:
+expose-argocd-server: create-initial-password
 	@echo "Exposing ArgoCD server..."
 	@nohup kubectl port-forward svc/argocd-server -n argocd --address $(IP_ADDRESS) $(ARGOCD_EXPOSED_PORT):443 > /dev/null 2>&1 &
 	@echo "ArgoCD server exposed at https://$(IP_ADDRESS):$(ARGOCD_EXPOSED_PORT)"

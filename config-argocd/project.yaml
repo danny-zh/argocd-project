@@ -1,0 +1,44 @@
+apiVersion: v1
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: testargocd
+  namespace: argocd
+spec:
+  sourceRepos:
+    - git@github.com:danny-zh/k8s-admin.git
+  destinations:
+    - name: vagrant-cluster
+      namespace: "*"
+      server: 'https://vagrant-cluster.dannyzh.com:6443'
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+    - group: ""
+      kind: PersistentVolume
+  namespaceResourceWhitelist:
+    - group: apps
+      kind: Deployment
+    - group: ""
+      kind: Service
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: Secret
+    - group: ""
+      kind: PersistentVolumeClaim
+    - group: "networking.k8s.io"
+      kind: Ingress
+  roles:
+    - name: dev-readonly
+      description: Read-only access for developers
+      policies:
+        - p, proj:app1-project:dev-readonly, applications, get, app1-project/*, allow
+      groups:
+        - app1-devs
+    - name: platform-admin
+      description: Full control for platform team
+      policies:
+        - p, proj:app1-project:platform-admin, applications, *, app1-project/*, allow
+      groups:
+        - platform-team
