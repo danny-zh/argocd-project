@@ -33,3 +33,8 @@ update-coredns-configmap:
 	@kubectl -n kube-system apply -f coredns-configmap.yaml
 	@kubectl rollout restart deployment coredns -n kube-system
 	@echo "CoreDNS ConfigMap updated."
+
+argocd-login: expose-argocd-server
+	@echo "Logging into ArgoCD..."
+	@argocd login $(IP_ADDRESS):$(ARGOCD_EXPOSED_PORT) --username admin --password $(shell kubectl get secret -n argocd argocd-initial-admin-secret -o template={{.data.password}} | base64 -d) --insecure
+	@echo "Logged into ArgoCD."
