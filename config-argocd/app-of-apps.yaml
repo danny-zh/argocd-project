@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-of-apps-application
+  namespace: argocd
+spec:
+  destination:
+    namespace: app-of-apps-application-namespace
+    server: https://vagrant-cluster.dannyzh.com:6443
+  project: app-of-apps
+  sources:
+    - path: charts/guestbook-new/chart/guestbook/argo
+      repoURL: git@github.com:danny-zh/k8s-admin.git
+      targetRevision: HEAD
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    - LastPrune=true
+    - ApplyOutOfSyncOnly=true
