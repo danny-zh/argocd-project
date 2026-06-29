@@ -5,8 +5,8 @@ metadata:
   namespace: argocd
 spec:
   destination:
-    namespace: app-of-apps-application-namespace
-    server: https://vagrant-cluster.dannyzh.com:6443
+    namespace: argocdd
+    server: https://kubernetes.default.svc
   project: app-of-apps
   sources:
     - path: charts/guestbook-new/chart/guestbook/argo

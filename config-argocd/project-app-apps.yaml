@@ -11,6 +11,9 @@ spec:
     - name: vagrant-cluster
       namespace: "*"
       server: 'https://vagrant-cluster.dannyzh.com:6443'
+    - name: kubernetes-cluster
+      namespace: "*"
+      server: 'https://kubernetes.default.svc'
   clusterResourceWhitelist:
     - group: ""
       kind: Namespace
@@ -33,6 +36,8 @@ spec:
       kind: Job
     - group: ""
       kind: Pod
+    - group: "argoproj.io"
+      kind: Application
   roles:
     - name: dev-readonly
       description: Read-only access for developers
