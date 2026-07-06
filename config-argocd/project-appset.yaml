@@ -1,0 +1,58 @@
+apiVersion: v1
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: appset-project
+  namespace: argocd
+spec:
+  sourceRepos:
+    - git@github.com:danny-zh/k8s-admin.git
+  destinations:
+    - name: vagrant-cluster
+      namespace: "*"
+      server: 'https://vagrant-cluster.dannyzh.com:6443'
+    - name: kubernetes-cluster
+      namespace: "*"
+      server: 'https://kubernetes.default.svc'
+    - name: ha-vagrant-cluster
+      namespace: "*"
+      server: 'https://k8s.vagrant-cluster.dannyzh.com:6443'
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+    - group: ""
+      kind: PersistentVolume
+  namespaceResourceWhitelist:
+    - group: apps
+      kind: Deployment
+    - group: ""
+      kind: Service
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: Secret
+    - group: ""
+      kind: PersistentVolumeClaim
+    - group: "networking.k8s.io"
+      kind: Ingress
+    - group: "batch"
+      kind: Job
+    - group: ""
+      kind: Pod
+    - group: "argoproj.io"
+      kind: Application
+    - group: "argoproj.io"
+      kind: ApplicationSet
+  roles:
+    - name: dev-readonly
+      description: Read-only access for developers
+      policies:
+        - p, proj:app-of-apps:dev-readonly, applications, get, app-of-apps/*, allow
+      groups:
+        - app-of-apps-devs
+    - name: platform-admin
+      description: Full control for platform team
+      policies:
+        - p, proj:app-of-apps:platform-admin, applications, *, app-of-apps/*, allow
+      groups:
+        - app-of-apps-platform-team

@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: application-set-test
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions:
+    - missingkey=error
+  
+  generators:
+    - git:
+        repoURL: git@github.com:danny-zh/k8s-admin.git
+        revision: main
+        files:
+          - path: charts/guestbook-new/chart/guestbook/clusters.yaml
+
+  template:
+    metadata:
+      name: '{{.name}}'
+      namespace: argocd
+    spec:
+      destination:
+        namespace: '{{.namespace}}'
+        name: '{{.cluster}}'
+      project: appset-project
+      sources:
+        - path: charts/guestbook-new/chart/guestbook
+          repoURL: git@github.com:danny-zh/k8s-admin.git
+          targetRevision: HEAD
+      syncPolicy:
+        syncOptions:
+        - CreateNamespace=true
+        - LastPrune=true
+        - ApplyOutOfSyncOnly=true
